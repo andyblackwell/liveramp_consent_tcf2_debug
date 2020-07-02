@@ -230,6 +230,7 @@
         if (!cmpLoaded_check2 && pingData.cmpLoaded && pingData.cmpStatus == 'loaded') {
             cmpLoaded_check2 = true;
             clearInterval(cmpLoaded_interval);
+            $messages.append('<li><p>__tcfapi("ping") response (polling)</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
             window.__tcfapi('getTCData', 2, function(tcfData){
                 $messages.append('<li><p>__tcfapi("getTCData") response (polling)</p> <pre>' + JSON.stringify({tcfData:tcfData}, null, 4) + '</pre></li>');
             });
