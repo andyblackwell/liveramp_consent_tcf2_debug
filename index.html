@@ -4,6 +4,7 @@
     <style>
         #page_wrapper {
             margin: 20px 0;
+            padding-bottom: 300px;
         }
         h1,
         h3 {
@@ -26,6 +27,8 @@
             padding: 10px;
             margin: 0;
             width: fit-content;
+            max-height: 400px;
+            overflow: scroll;
         }
         @media (max-width: 600px) {
             body { font-size: 11px; }
@@ -216,6 +219,23 @@
       $messages.append('<li><p>__tcfapi("addEventListener") response</p> <pre>' + JSON.stringify({tcfData:tcfData, success:success}, null, 4) + '</pre></li>');
       ping_check();
     });
+    var cmpLoaded_check1 = false;
+    var cmpLoaded_check2 = false;
+    var cmpLoaded_interval = setInterval(function(){
+      window.__tcfapi('ping', 2, function(pingData){
+        if (!cmpLoaded_check1 && (pingData.cmpLoaded || pingData.cmpStatus == 'loaded')) {
+            cmpLoaded_check1 = true;
+            $messages.append('<li><p>__tcfapi("ping") response</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
+        }
+        if (!cmpLoaded_check2 && pingData.cmpLoaded && pingData.cmpStatus == 'loaded') {
+            cmpLoaded_check2 = true;
+            clearInterval(cmpLoaded_interval);
+            window.__tcfapi('getTCData', 2, function(tcfData){
+                $messages.append('<li><p>__tcfapi("getTCData") response</p> <pre>' + JSON.stringify({tcfData:tcfData}, null, 4) + '</pre></li>');
+            });
+        }
+      });
+    }, 50);
   })()
   </script>
 </body>
