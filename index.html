@@ -209,15 +209,15 @@
         jQuery(this).parent().find('pre').slideToggle();
     });
     var $messages = jQuery('#messages');
-    var ping_check = function(){
+    var ping_check = function(message){
       window.__tcfapi('ping', 2, function(pingData){
-        $messages.append('<li><p>__tcfapi("ping") response</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
+        $messages.append('<li><p>__tcfapi("ping") response '+ message +'</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
       });
     };
-    ping_check();
+    ping_check('(immediate)');
     window.__tcfapi('addEventListener', 2, function(tcfData, success){
       $messages.append('<li><p>__tcfapi("addEventListener") response</p> <pre>' + JSON.stringify({tcfData:tcfData, success:success}, null, 4) + '</pre></li>');
-      ping_check();
+      ping_check('(after addEventListener fired)');
     });
     var cmpLoaded_check1 = false;
     var cmpLoaded_check2 = false;
@@ -225,13 +225,13 @@
       window.__tcfapi('ping', 2, function(pingData){
         if (!cmpLoaded_check1 && (pingData.cmpLoaded || pingData.cmpStatus == 'loaded')) {
             cmpLoaded_check1 = true;
-            $messages.append('<li><p>__tcfapi("ping") response</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
+            $messages.append('<li><p>__tcfapi("ping") response (polling)</p> <pre>' + JSON.stringify({pingData:pingData}, null, 4) + '</pre></li>');
         }
         if (!cmpLoaded_check2 && pingData.cmpLoaded && pingData.cmpStatus == 'loaded') {
             cmpLoaded_check2 = true;
             clearInterval(cmpLoaded_interval);
             window.__tcfapi('getTCData', 2, function(tcfData){
-                $messages.append('<li><p>__tcfapi("getTCData") response</p> <pre>' + JSON.stringify({tcfData:tcfData}, null, 4) + '</pre></li>');
+                $messages.append('<li><p>__tcfapi("getTCData") response (polling)</p> <pre>' + JSON.stringify({tcfData:tcfData}, null, 4) + '</pre></li>');
             });
         }
       });
